@@ -19,6 +19,7 @@ For instructions about ESPHome installation see: https://esphome.io/index.html
 
 ## ESPHome firmware notes
 
+To use roboto font as in this project, copy Roboto-Regular.ttf file in your ESPHome folder.
 - At boot display is always turned on;
 - If Out A is ON display still remains on;
 - If Out A is OFF display will turn OFF after 30s;
