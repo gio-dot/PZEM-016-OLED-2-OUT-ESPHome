@@ -1,13 +1,11 @@
 # PZEM-016-OLED-2-OUT-ESPHome
 
-I use a Sonoff Pow R2 to monitor my washing machine activity in Home assistant; traditional approach to do so is to decode washing phases using Home assistant sensors/templates. Thanks to ESPHome firmware this can be easily made directly in the Sonoff Pow R2 cleaning up Home assistant configuration.
-Five binary sensors (RUN, WASHING, CENTRIFUGE, DRAIN, END) are automatically exposed by the Sonoff Pow to Home assistant frontend.
-
-RUN or END sensors can be easily used in Home assistant automations to send messages to Telegram or Google home etc. to  warn that the cycle has ended. See: [home_assistant_w_machine.yaml](https://github.com/Gio-dot/Washing-Machine-Sonoff-Pow-R2-Esphome/blob/master/home_assistant_w_machine.yaml)
+I modified a PZEM-016 putting inside a Wemos D1 mini with ESPHome firmware and an oled display to show relevant readings. PZEM-016 has an rs485 interface, so to connect it to Wemos d1 rs485 chip must be removed and voltage level has to be shifted to 3.3V using two 2k2 resistors. I used A and B pin on the old rs485 connector to create two digital outputs that can be used ie to drive two relais module. 
+See: [home_assistant_w_machine.yaml](https://github.com/Gio-dot/Washing-Machine-Sonoff-Pow-R2-Esphome/blob/master/home_assistant_w_machine.yaml)
 
 For instructions about ESPHome installation see: https://esphome.io/index.html
 
-## How it works
+## Schematic
 
 <img src="https://github.com/Gio-dot/PZEM-016-OLED-2-OUT-ESPHome/blob/master/img/ESPHome-wemos-d1-pzem016-display_bb.png" width="800">
 
