@@ -9,7 +9,7 @@ For instructions about ESPHome installation see: https://esphome.io/index.html
 
 ## How it works
 
-<img src="https://github.com/Gio-dot/PZEM-016-OLED-2-OUT-ESPHome/blob/master/img/ESPHome-wemos-d1-pzem016-display_bb.png" width="600">
+<img src="https://github.com/Gio-dot/PZEM-016-OLED-2-OUT-ESPHome/blob/master/img/ESPHome-wemos-d1-pzem016-display_bb.png" width="800">
 <img src="https://github.com/Gio-dot/PZEM-016-OLED-2-OUT-ESPHome/blob/master/img/2020-04-30%2000_55_38-Panoramica%20-%20Home%20Assistant.png" width="300">
 This image show Home assitant card from Sonoff Pow. Washing phases are shown in sequence from bottom to top. At the end of the cycle all phases (except RUN) remains lighted. At next cycle start they are resetted.
 Sonoff Pow blue Led is lighted when a cycle is running and turned off at the cycle end.
