@@ -1,7 +1,8 @@
 # PZEM-016-OLED-2-OUT-ESPHome
 
 I modified a PZEM-016 putting inside a Wemos D1 mini with ESPHome firmware and an oled display to show relevant readings. PZEM-016 has an rs485 interface, so to connect it to Wemos d1 rs485 chip must be removed and voltage level has to be shifted to 3.3V using two 2k2 resistors. I used A and B pin on the old rs485 connector to create two digital outputs that can be used ie to drive two relais module. 
-See: [home_assistant_w_machine.yaml](https://github.com/Gio-dot/Washing-Machine-Sonoff-Pow-R2-Esphome/blob/master/home_assistant_w_machine.yaml)
+
+ESPHome firmware source: [wemos_d1_pzem016_display.yaml](https://github.com/Gio-dot/PZEM-016-OLED-2-OUT-ESPHome/blob/master/wemos_d1_pzem016_display.yaml)
 
 For instructions about ESPHome installation see: https://esphome.io/index.html
 
