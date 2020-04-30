@@ -25,7 +25,7 @@ To use roboto font as in this project, copy Roboto-Regular.ttf file in your ESPH
 - If Out A is OFF display will turn OFF after 30s;
 - Total daily energy sensor is included;
 - There are 2 sensors set: one fast (updated every 2s for precise total daily energy calculation and fast display refresh) and one slow (every 10s) to be used in Home assistant.
-- Diplay can be used to show information from Home assistant; in this example i show status of Climate out.
+- Diplay can be also used to show informations from Home assistant; in this example i show status of Climate out.
 
 
 
