@@ -17,17 +17,12 @@ For instructions about ESPHome installation see: https://esphome.io/index.html
 </p>
 
 
-This image show Home assitant card from Sonoff Pow. Washing phases are shown in sequence from bottom to top. At the end of the cycle all phases (except RUN) remains lighted. At next cycle start they are resetted.
-Sonoff Pow blue Led is lighted when a cycle is running and turned off at the cycle end.
-
 ## ESPHome firmware notes
 
-Use this yaml code to create your ESPHome firmware: [sonoff_pow_r2_w_machine.yaml](https://github.com/Gio-dot/Washing-Machine-Sonoff-Pow-R2-Esphome/blob/master/sonoff_pow_r2_w_machine.yaml)
-
-Line 5: `esp8266_restore_from_flash: true` to restore previous relay state after a Sonoff POW R2 power cycle.
-
-Lines 48-167: washing phases; phases detection can be optimized changing power thresholds and delay filters. 
-
-ESPHome `total_daily_energy` isn't retained through Sonoff power cycles. For this reason and also to store washing machine consumption hystorical data, i used an utility meter in Home assistant Configuration feeding it with `total_daily_energy` sensor from Sonoff POW.
+- At boot display is always turned on;
+- If Out A is ON display still remains on;
+- If Out A is OFF display will turn OFF after 30s;
+- Total daily energy sensor is included;
+- There are 2 sensors set: one fast (updated every 2s for precise total daily energy calculation and fast display refresh) and one slow (every 10s) to be used in Home assistant.
 
 
