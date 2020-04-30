@@ -1,0 +1,221 @@
+esphome:
+  name: wemos_d1_pzem016_display
+  platform: ESP8266
+  board: d1_mini
+  # esp8266_restore_from_flash: true
+  on_boot:
+    priority: -100.0
+    then:
+      - lambda: id(disp).publish_state(true); # at boot always start display
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pw
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Wemos D1 Ingresso"
+    password: "RSixraswZ4Vk"
+
+captive_portal:
+
+# Enable logging
+logger:
+  level: DEBUG
+  baud_rate: 0 # MESSO A 0 disabilita logger UART (usata per PZEM)
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+time:
+  - platform: sntp
+    id: my_time
+
+uart: # E' una serial software (SI POSSONO USARE ANCHE I PIN DELLA HARDWARE)
+  rx_pin: GPIO3 # ERA D5
+  tx_pin: GPIO1 # ERA D6
+  baud_rate: 9600
+  stop_bits: 1
+  
+i2c:
+  sda: D2
+  scl: D1  
+
+binary_sensor:
+  - platform: template
+    name: "display on"
+    id: disp
+    internal: true  
+    on_press:
+      then:
+        - delay: 30s # if sw2 is off display always turn off after 30s
+        - lambda: |
+            if (id(sw2).state)  
+              {
+                id(disp).publish_state(true);
+              } 
+            else 
+              {
+                id(disp).publish_state(false);
+              }
+
+  - platform: homeassistant
+    name: "Caldaia ON"
+    entity_id: binary_sensor.termostato_heating
+    internal: true
+    id: caldaia
+
+sensor:
+
+################################################################################
+#           Fast sensors for Energy calculation & local display                #
+################################################################################
+
+  - platform: pzemac
+    current:
+      name: "PZEM-016 Current"
+      id: aac
+      internal: true
+    voltage:
+      name: "PZEM-016 Voltage"
+      id: vac
+      internal: true
+    power:
+      name: "PZEM-016 Power"
+      id: w
+      internal: true
+    frequency:
+      name: "PZEM-016 Frequency"
+      id: f
+      internal: true
+    power_factor:
+      name: "PZEM-016 Power Factor"
+      id: pf
+      internal: true
+    update_interval: 2s
+
+  - platform: total_daily_energy
+    name: "PZEM-016 Daily Energy"
+    power_id: w 
+    filters:
+        # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+    unit_of_measurement: kWh
+    icon: mdi:counter
+    accuracy_decimals: 1   
+
+################################################################################
+#                         Slow sensors for Home assistant                      #
+################################################################################
+
+  - platform: template #########################
+    name: "PZEM-016 Current Slow"
+    lambda: |-
+      if (id(aac).state) {
+        return (id(aac).state);
+      } else {
+        return 0;
+      }
+    unit_of_measurement: A
+    icon: "mdi:alpha-a-circle"
+    update_interval: 10s
+  
+  - platform: template #########################
+    name: "PZEM-016 Voltage Slow"
+    lambda: |-
+      if (id(vac).state) {
+        return (id(vac).state);
+      } else {
+        return 0;
+      }
+    unit_of_measurement: V
+    icon: "mdi:alpha-v-circle"
+    update_interval: 10s
+  
+  - platform: template #########################
+    name: "PZEM-016 Power Slow"
+    lambda: |-
+      if (id(w).state) {
+        return (id(w).state);
+      } else {
+        return 0;
+      }
+    unit_of_measurement: W 
+    icon: "mdi:alpha-w-circle"
+    update_interval: 10s
+  
+  - platform: template #########################
+    name: "PZEM-016 Frequency Slow"
+    lambda: |-
+      if (id(f).state) {
+        return (id(f).state);
+      } else {
+        return 0;
+      }
+    unit_of_measurement: Hz
+    icon: "mdi:alpha-f-circle"
+    update_interval: 10s
+
+  - platform: template #########################
+    name: "PZEM-016 Power Factor Slow"
+    lambda: |-
+      if (id(pf).state) {
+        return (id(pf).state);
+      } else {
+        return 0;
+      }
+    unit_of_measurement: PF
+    icon: "mdi:alpha-p-circle"
+    update_interval: 10s
+
+switch:
+  - platform: gpio
+    id: sw1
+    pin: D5 # orange wire --> B out
+    name: "Out B"
+  - platform: gpio
+    id: sw2
+    pin: D6 # blue wire --> A out
+    name: "Out A" 
+    on_turn_on:
+      then:
+        - lambda: id(disp).publish_state(true);
+    on_turn_off:
+      then:
+        - lambda: id(disp).publish_state(false);     
+
+font:
+  - file: "Roboto-Regular.ttf"
+    id: my_font
+    size: 20  
+  - file: "Roboto-Regular.ttf"
+    id: my_font_15
+    size: 15    
+    
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+#    reset_pin: D0
+    address: 0x3C
+    lambda: |-
+      if ( (id(vac).has_state())&&(id(disp).state) ) 
+      {
+        it.printf(0, 4, id(my_font), TextAlign::TOP_LEFT , "%.1fV", id(vac).state);
+      }
+      
+      if ( (id(pf).has_state())&&(id(disp).state) )  
+      {
+        it.printf(128, 4, id(my_font), TextAlign::TOP_RIGHT , "%.2fp", id(pf).state);
+      }  
+      
+      if ( (id(w).has_state())&&(id(disp).state) )  
+      {
+        it.printf(0, 40, id(my_font), TextAlign::CENTER_LEFT , "%.0fW", id(w).state);
+      }      
+      
+      if ( (id(caldaia).state)&&(id(disp).state) )  
+      {
+        it.print(128, 40, id(my_font), TextAlign::CENTER_RIGHT , "C");
+      }      
